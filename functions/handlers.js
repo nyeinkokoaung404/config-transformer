@@ -11,19 +11,23 @@ export async function handleUpdate(update, env) {
     const botToken = env.BOT_TOKEN;
 
     if (text === '/start') {
-        await sendMessage(chatId, "Welcome to 404 Transformer Bot! 🚀\n\nLink ကို ပို့ပေးပါ။ မူရင်း Host ကို SNI အဖြစ်သုံးပြီး Bug IP နဲ့ ပြောင်းလဲပေးပါမယ်။", botToken);
+        await sendMessage(chatId, "Welcome to 404 Transformer Bot! 🚀\n\nConfig link ထဲက WebSocket Host ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
         return;
     }
 
-    // Config Link စစ်ဆေးခြင်း
+    // Config format စစ်ဆေးခြင်း (Vless/Trojan)
     if (text.startsWith('vless://') || text.startsWith('trojan://')) {
         try {
             const transformedConfig = transformConfig(text, env);
-            const message = "✅ *Transformation Success!*\n\n`" + transformedConfig + "`";
-            await sendMessage(chatId, message, botToken, true);
+            // Telegram MarkdownV2 မှာ special characters တွေ error မတက်အောင် Escaping လုပ်ပေးဖို့လိုပါတယ်
+            const escapedConfig = transformedConfig.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+            
+            await sendMessage(chatId, `✅ *Transformation Success\\!*\n\n\`${escapedConfig}\``, botToken, true);
         } catch (e) {
-            await sendMessage(chatId, "❌ Invalid Config Format or Error!", botToken);
+            await sendMessage(chatId, "❌ Invalid Config Format or Host not found!", botToken);
         }
+    } else {
+        await sendMessage(chatId, "⚠️ VLESS သို့မဟုတ် TROJAN link သာ ပို့ပေးပါ။", botToken);
     }
 }
 
@@ -32,37 +36,25 @@ function transformConfig(rawInput, env) {
     const protocol = url.protocol.replace(':', '');
     const params = Object.fromEntries(url.searchParams);
     
-    // ၁။ User ပေးပို့လိုက်တဲ့ Original Host ကို ရယူခြင်း (ဒါကို SNI နဲ့ Host အတွက် သုံးပါမယ်)
-    const originalHost = url.hostname; 
+    // ၁။ User ပို့တဲ့ link ထဲက 'host' parameter ကို ရယူခြင်း
+    // အကယ်၍ host မပါခဲ့ရင် original address (hostname) ကို backup အနေနဲ့ ယူမယ်
+    const originalHost = params.host || url.hostname;
     
-    // ၂။ Authentication (UUID or Password)
+    if (!originalHost) throw new Error("Host not found");
+
     const auth = (protocol === 'vless') ? url.username : (url.password || url.username);
-    
-    // ၃။ Remark/Name (Hash)
-    const hash = url.hash || '#Transform_404';
+    const remark = url.hash || '#Transform_404';
 
-    // ၄။ Bug Address (Cloudflare IP or Bug Domain) 
-    // Env ထဲမှာ မရှိရင် Default IP တစ်ခု သတ်မှတ်ထားပေးပါ
-    const bugAddress = env.BUG_ADDRESS || "172.67.133.97";
+    // ၂။ Transformer settings (Env ကနေယူမယ် သို့မဟုတ် Default သုံးမယ်)
+    const bugAddress = env.BUG_ADDRESS || "172.67.133.97"; // Target IP/Bug
     const port = env.DEFAULT_PORT || "443";
-
-    // ၅။ Construct New Config
-    // SNI နဲ့ Host နေရာမှာ စောစောက ရယူထားတဲ့ originalHost ကို သုံးထားပါတယ်
     const path = params.path || '/';
-    
-    // Build parameters
-    const newParams = new URLSearchParams({
-        path: path,
-        security: 'tls',
-        encryption: 'none',
-        host: originalHost,
-        type: 'ws',
-        sni: originalHost,
-        fp: 'chrome',
-        alpn: 'http/1.1'
-    });
 
-    return `${protocol}://${auth}@${bugAddress}:${port}?${newParams.toString()}${hash}`;
+    // ၃။ New Config တည်ဆောက်ခြင်း
+    // SNI နဲ့ Host နေရာမှာ စောစောက extract လုပ်ထားတဲ့ originalHost ကို ပြန်ထည့်မယ်
+    const newConfig = `${protocol}://${auth}@${bugAddress}:${port}?path=${encodeURIComponent(path)}&security=tls&alpn=http%2F1.1&encryption=none&host=${originalHost}&fp=chrome&type=ws&sni=${originalHost}${remark}`;
+
+    return newConfig;
 }
 
 async function sendMessage(chatId, text, token, isMarkdown = false) {
@@ -70,8 +62,11 @@ async function sendMessage(chatId, text, token, isMarkdown = false) {
     const payload = {
         chat_id: chatId,
         text: text,
-        parse_mode: isMarkdown ? "Markdown" : ""
     };
+    
+    if (isMarkdown) {
+        payload.parse_mode = "MarkdownV2";
+    }
 
     await fetch(url, {
         method: 'POST',
