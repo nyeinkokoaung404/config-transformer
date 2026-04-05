@@ -11,7 +11,7 @@ export async function handleUpdate(update, env) {
     const botToken = env.BOT_TOKEN;
 
     if (text === '/start') {
-        await sendMessage(chatId, "Welcome to 404 Config Transformer Bot! 🚀\n\nVless-Trojan Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
+        await sendMessage(chatId, "*Welcome to 404 Config Transformer Bot!* 🚀\n\nVless-Trojan Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
         return;
     }
 
@@ -19,15 +19,15 @@ export async function handleUpdate(update, env) {
     if (text.startsWith('vless://') || text.startsWith('trojan://')) {
         try {
             const transformedConfig = transformConfig(text, env);
-            // Telegram MarkdownV2 မှာ special characters တွေ error မတက်အောင် Escaping လုပ်ပေးဖို့လိုပါတယ်
+            
             const escapedConfig = transformedConfig.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
             
             await sendMessage(chatId, `✅ *Transformation Success\\!*\n\n\`\`\`${escapedConfig}\`\`\``, botToken, true);
         } catch (e) {
-            await sendMessage(chatId, "❌ Invalid Config Format or Host not found!", botToken);
+            await sendMessage(chatId, "❌ *Invalid Config Format or Host not found!*", botToken);
         }
     } else {
-        await sendMessage(chatId, "⚠️ VLESS သို့မဟုတ် TROJAN link သာ ပို့ပေးပါ။", botToken);
+        await sendMessage(chatId, "⚠️ *VLESS သို့မဟုတ် TROJAN link သာ ပို့ပေးပါ။*", botToken);
     }
 }
 
@@ -36,8 +36,6 @@ function transformConfig(rawInput, env) {
     const protocol = url.protocol.replace(':', '');
     const params = Object.fromEntries(url.searchParams);
     
-    // ၁။ User ပို့တဲ့ link ထဲက 'host' parameter ကို ရယူခြင်း
-    // အကယ်၍ host မပါခဲ့ရင် original address (hostname) ကို backup အနေနဲ့ ယူမယ်
     const originalHost = params.host || url.hostname;
     
     if (!originalHost) throw new Error("Host not found");
@@ -45,13 +43,10 @@ function transformConfig(rawInput, env) {
     const auth = (protocol === 'vless') ? url.username : (url.password || url.username);
     const remark = url.hash || '#Transform_404';
 
-    // ၂။ Transformer settings (Env ကနေယူမယ် သို့မဟုတ် Default သုံးမယ်)
     const bugAddress = env.BUG_ADDRESS || "172.67.133.97"; // Target IP/Bug
     const port = env.DEFAULT_PORT || "443";
     const path = params.path || '/';
 
-    // ၃။ New Config တည်ဆောက်ခြင်း
-    // SNI နဲ့ Host နေရာမှာ စောစောက extract လုပ်ထားတဲ့ originalHost ကို ပြန်ထည့်မယ်
     const newConfig = `${protocol}://${auth}@${bugAddress}:${port}?path=${encodeURIComponent(path)}&security=tls&alpn=http%2F1.1&encryption=none&host=${originalHost}&fp=chrome&type=ws&sni=${originalHost}${remark}`;
 
     return newConfig;
