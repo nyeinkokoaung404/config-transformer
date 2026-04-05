@@ -11,7 +11,7 @@ export async function handleUpdate(update, env) {
     const botToken = env.BOT_TOKEN;
 
     if (text === '/start') {
-        await sendMessage(chatId, "*Welcome to 404 Config Transformer Bot!* 🚀\n\nVless-Trojan Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
+        await sendMessage(chatId, "*Welcome to 404 Config Transformer Bot!* 🚀\n\nVless-Trojan Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken, true);
         return;
     }
 
@@ -24,10 +24,10 @@ export async function handleUpdate(update, env) {
             
             await sendMessage(chatId, `✅ *Transformation Success\\!*\n\n\`\`\`${escapedConfig}\`\`\``, botToken, true);
         } catch (e) {
-            await sendMessage(chatId, "❌ *Invalid Config Format or Host not found!*", botToken);
+            await sendMessage(chatId, "❌ *Invalid Config Format or Host not found!*", botToken, true);
         }
     } else {
-        await sendMessage(chatId, "⚠️ *VLESS သို့မဟုတ် TROJAN link သာ ပို့ပေးပါ။*", botToken);
+        await sendMessage(chatId, "⚠️ *VLESS သို့မဟုတ် TROJAN link သာ ပို့ပေးပါ။*", botToken, true);
     }
 }
 
