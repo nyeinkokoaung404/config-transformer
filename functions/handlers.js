@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////
-// Multi-Protocol Transformer Bot Logic
-// Developer: nkka404
+// Multi-Protocol Transformer Bot
+// Developer: t.me/nkka404
 ///////////////////////////////////////////////
 
 export async function handleUpdate(update, env) {
@@ -19,8 +19,6 @@ export async function handleUpdate(update, env) {
     if (text.startsWith('vless://') || text.startsWith('trojan://')) {
         try {
             const transformedConfig = transformConfig(text, env);
-            // Telegram MarkdownV2 မှာ အထူးသင်္ကေတတွေကို escape လုပ်ဖို့လိုတတ်ပါတယ်
-            // ရိုးရိုးရှင်းရှင်းပဲ code block ထဲထည့်ပြပါမယ်
             const message = "✅ *Transformation Success!*\n\n`" + transformedConfig + "`";
             await sendMessage(chatId, message, botToken, true);
         } catch (e) {
@@ -57,9 +55,9 @@ function transformConfig(rawInput, env) {
         path: path,
         security: 'tls',
         encryption: 'none',
-        host: originalHost,   // <--- ဒီမှာ User ဆီက host ကို ပြန်သုံးထားပါတယ်
+        host: originalHost,
         type: 'ws',
-        sni: originalHost,    // <--- ဒီမှာလည်း SNI အတွက် သုံးထားပါတယ်
+        sni: originalHost,
         fp: 'chrome',
         alpn: 'http/1.1'
     });
@@ -72,7 +70,7 @@ async function sendMessage(chatId, text, token, isMarkdown = false) {
     const payload = {
         chat_id: chatId,
         text: text,
-        parse_mode: isMarkdown ? "Markdown" : "" // MarkdownV2 ထက် Markdown က ပိုရိုးရှင်းပါတယ်
+        parse_mode: isMarkdown ? "Markdown" : ""
     };
 
     await fetch(url, {
