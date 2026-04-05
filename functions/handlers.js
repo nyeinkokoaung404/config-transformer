@@ -11,7 +11,7 @@ export async function handleUpdate(update, env) {
     const botToken = env.BOT_TOKEN;
 
     if (text === '/start') {
-        await sendMessage(chatId, "*Welcome to 404 Config Transformer Bot!* 🚀\n\nVless (သို့မဟုတ်) Trojan Config Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken, true);
+        await sendMessage(chatId, "Welcome to 404 Config Transformer Bot! 🚀\n\nVless (သို့မဟုတ်) Trojan Config Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
         return;
     }
 
