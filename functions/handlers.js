@@ -4,7 +4,7 @@
 // Version: 2.0 (Stable)
 ///////////////////////////////////////////////
 
-async function handleUpdate(update, env) {
+export async function handleUpdate(update, env) {
     const botToken = env.BOT_TOKEN;
     const kv = env.STATE_KV;
 
