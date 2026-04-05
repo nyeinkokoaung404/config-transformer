@@ -11,7 +11,7 @@ export async function handleUpdate(update, env) {
     const botToken = env.BOT_TOKEN;
 
     if (text === '/start') {
-        await sendMessage(chatId, "Welcome to 404 Transformer Bot! 🚀\n\nConfig link ထဲက WebSocket Host ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
+        await sendMessage(chatId, "Welcome to 404 Config Transformer Bot! 🚀\n\nVless-Trojan Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
         return;
     }
 
@@ -22,7 +22,7 @@ export async function handleUpdate(update, env) {
             // Telegram MarkdownV2 မှာ special characters တွေ error မတက်အောင် Escaping လုပ်ပေးဖို့လိုပါတယ်
             const escapedConfig = transformedConfig.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
             
-            await sendMessage(chatId, `✅ *Transformation Success\\!*\n\n\`${escapedConfig}\``, botToken, true);
+            await sendMessage(chatId, `✅ *Transformation Success\\!*\n\n\`\`\`${escapedConfig}\`\`\``, botToken, true);
         } catch (e) {
             await sendMessage(chatId, "❌ Invalid Config Format or Host not found!", botToken);
         }
