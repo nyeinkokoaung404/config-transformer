@@ -28,7 +28,7 @@ export async function handleUpdate(update, env) {
         if (selectedBug && rawConfig) {
             try {
                 const transformedConfig = transformConfig(rawConfig, selectedBug.ip, env);
-                // MarkdownV2 အတွက် Special Characters တွေကို Escape လုပ်ခြင်း
+                
                 const escapedConfig = transformedConfig.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
                 
                 await sendMessage(chatId, `✅ *Selected:* ${selectedBug.label}\n\n\`\`\`${escapedConfig}\`\`\``, botToken, true);
@@ -36,10 +36,10 @@ export async function handleUpdate(update, env) {
                 // ခလုတ်နှိပ်ပြီးရင် Loading circle လေး ပျောက်သွားအောင် အကြောင်းပြန်ပေးရပါမယ်
                 await answerCallback(update.callback_query.id, botToken);
             } catch (e) {
-                await sendMessage(chatId, "❌ *Error during transformation!*", botToken);
+                await sendMessage(chatId, "❌ Error during transformation!", botToken);
             }
         } else {
-            await sendMessage(chatId, "❌ *Link Expired or Not Found!* ကျေးဇူးပြု၍ Link ပြန်ပို့ပေးပါ။", botToken, true);
+            await sendMessage(chatId, "❌ Link Expired or Not Found! ကျေးဇူးပြု၍ Link ပြန်ပို့ပေးပါ။", botToken);
         }
         return;
     }
@@ -51,19 +51,18 @@ export async function handleUpdate(update, env) {
     const text = update.message.text.trim();
 
     if (text === '/start') {
-        await sendMessage(chatId, "Welcome to 404 Transformer! 🚀\n\nVless/Trojan Link ပို့ပေးပါ။", botToken, true);
+        await sendMessage(chatId, "Welcome to Config Transformer Bot! 🚀\n\nVless-Trojan Link ကို ပို့ပေးပါ။ မူရင်း Config link ကို အခြေခံပြီး Transform လုပ်ပေးပါမည်။", botToken);
         return;
     }
 
     if (text.startsWith('vless://') || text.startsWith('trojan://')) {
         const keyboard = {
             inline_keyboard: BUGS.map(bug => [
-                { text: bug.label, callback_data: bug.id } // ID အတိုလေးတွေပဲ ပို့မယ်
+                { text: bug.label, callback_data: bug.id }
             ])
         };
         
-        // Markdown ကြောင့် Error မတက်အောင် link ပြတဲ့နေရာမှာ parse_mode မသုံးဘဲ ပို့ပါမယ်
-        await sendMessage(chatId, `🔍 *Bug တစ်ခုကို ရွေးချယ်ပေးပါ:*\n\n${text}`, botToken, true, keyboard);
+        await sendMessage(chatId, `🔍 Bug တစ်ခုကို ရွေးချယ်ပေးပါ:\n\n${text}`, botToken, false, keyboard);
     }
 }
 
@@ -109,7 +108,7 @@ async function sendMessage(chatId, text, token, isMarkdown = false, keyboard = n
     });
 }
 
-// Telegram API: Answer Callback (Loading အဝိုင်းလေး ပျောက်စေရန်)
+// Telegram API: Answer Callback
 async function answerCallback(callbackId, token) {
     const url = `https://api.telegram.org/bot${token}/answerCallbackQuery`;
     await fetch(url, {
