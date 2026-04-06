@@ -4,9 +4,9 @@
 ///////////////////////////////////////////////
 
 const BUGS = [
-    { label: "Cloudflare", ip: "172.67.133.97", id: "cf" },
-    { label: "C.E.I.R", ip: "104.26.14.196", id: "amz" },
-    { label: "MPT Bug", ip: "mpt.com.mm", id: "isp" }
+    { label: "CF", ip: "172.67.133.97", id: "cf" },
+    { label: "CEIR", ip: "104.26.14.196", id: "amz" },
+    { label: "MPT", ip: "mpt.com.mm", id: "isp" }
 ];
 
 export async function handleUpdate(update, env) {
