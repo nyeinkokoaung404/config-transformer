@@ -5,9 +5,9 @@
 
 // ID တွေကို အတိုဆုံး (cf, amz, isp) လို့ပဲ ပေးပါမယ် (Limit 64 bytes ကျော်မသွားအောင်)
 const BUGS = [
-    { label: "Cloudflare (172.67.133.97)", ip: "172.67.133.97", id: "cf" },
-    { label: "Cloudfront (Amazon)", ip: "d12345.cloudfront.net", id: "amz" },
-    { label: "Mytel/MPT Bug", ip: "your.bug.com", id: "isp" }
+    { label: "Cloudflare", ip: "172.67.133.97", id: "cf" },
+    { label: "Cloudfront", ip: "d12345.cloudfront.net", id: "amz" },
+    { label: "Mytel/MPT Bug", ip: "104.26.14.196", id: "isp" }
 ];
 
 export async function handleUpdate(update, env) {
