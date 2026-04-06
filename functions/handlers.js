@@ -81,10 +81,13 @@ function transformConfig(rawInput, bugAddress, env) {
     const newParams = new URLSearchParams({
         path: path,
         security: "tls",
+        alpn: "http/1.1",
         encryption: "none",
+        insecure: "0",
         host: originalHost,
         fp: "chrome",
         type: "ws",
+        allowInsecure: "0",
         sni: originalHost
     });
 
