@@ -1,13 +1,12 @@
 ///////////////////////////////////////////////
-// Multi-Protocol Transformer Bot (Final Fix)
+// Multi-Protocol Transformer Bot
 // Developer: t.me/nkka404
 ///////////////////////////////////////////////
 
-// ID တွေကို အတိုဆုံး (cf, amz, isp) လို့ပဲ ပေးပါမယ် (Limit 64 bytes ကျော်မသွားအောင်)
 const BUGS = [
     { label: "Cloudflare", ip: "172.67.133.97", id: "cf" },
-    { label: "Cloudfront", ip: "d12345.cloudfront.net", id: "amz" },
-    { label: "Mytel/MPT Bug", ip: "104.26.14.196", id: "isp" }
+    { label: "C.E.I.R", ip: "104.26.14.196", id: "amz" },
+    { label: "MPT Bug", ip: "mpt.com.mm", id: "isp" }
 ];
 
 export async function handleUpdate(update, env) {
@@ -40,7 +39,7 @@ export async function handleUpdate(update, env) {
                 await sendMessage(chatId, "❌ *Error during transformation!*", botToken);
             }
         } else {
-            await sendMessage(chatId, "❌ *Link Expired or Not Found!* ကျေးဇူးပြု၍ Link ပြန်ပို့ပေးပါ။", botToken);
+            await sendMessage(chatId, "❌ *Link Expired or Not Found!* ကျေးဇူးပြု၍ Link ပြန်ပို့ပေးပါ။", botToken, true);
         }
         return;
     }
@@ -52,7 +51,7 @@ export async function handleUpdate(update, env) {
     const text = update.message.text.trim();
 
     if (text === '/start') {
-        await sendMessage(chatId, "Welcome to 404 Transformer! 🚀\n\nVless/Trojan Link ပို့ပေးပါ။", botToken);
+        await sendMessage(chatId, "Welcome to 404 Transformer! 🚀\n\nVless/Trojan Link ပို့ပေးပါ။", botToken, true);
         return;
     }
 
@@ -64,7 +63,7 @@ export async function handleUpdate(update, env) {
         };
         
         // Markdown ကြောင့် Error မတက်အောင် link ပြတဲ့နေရာမှာ parse_mode မသုံးဘဲ ပို့ပါမယ်
-        await sendMessage(chatId, `🔍 *Bug တစ်ခုကို ရွေးချယ်ပေးပါ:*\n\n${text}`, botToken, false, keyboard);
+        await sendMessage(chatId, `🔍 *Bug တစ်ခုကို ရွေးချယ်ပေးပါ:*\n\n${text}`, botToken, true, keyboard);
     }
 }
 
