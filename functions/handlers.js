@@ -5,7 +5,7 @@
 
 const BUGS = [
     { label: "Cloudflare", ip: "172.67.133.97", id: "cf" },
-    { label: "CEIR", ip: "104.26.14.196", id: "amz" },
+    { label: "Myanmar", ip: "www.myanmar.com", id: "amz" },
     { label: "MPT", ip: "mpt.com.mm", id: "isp" },
     { label: "Atom", ip: "172.66.1.232", id: "atom" }
 ];
